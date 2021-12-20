@@ -1,7 +1,11 @@
+require("dotenv").config({ path: "./config/.env" });
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const port = 4000;
+const port = process.env.PORT;
+
+//Adding the router
+const fnaRouter = require("./routes/fnaTrackerRoutes");
 
 //Enabling json accpetion using middleware
 app.use(express.json());
@@ -16,15 +20,20 @@ var corsOptions = {
 //using middleware to accept cors
 app.use(cors(corsOptions));
 
-// //Initiating routing
-// const fnaRouter = require("./routes/fnTrackerRoutes");
-
-// //using middleware for all requests receving starts with subscribers
-// app.use("/fna", fnaRouter);
+//using middleware for all requests starts with fna
+app.use("/fna", fnaRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
+
+/* Error handler middleware */
+// app.use((err, req, res, next) => {
+//   const statusCode = err.statusCode || 500;
+//   console.error(err.message, err.stack);
+//   res.status(statusCode).json({ message: err.message });
+//   return;
+// });
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
