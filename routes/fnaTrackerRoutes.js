@@ -1,21 +1,33 @@
 const express = require("express");
+const Activity = require("../models/activityModel");
 const router = express.Router();
 
-const fna = require("../controllers/fnaController");
+router.get("/", (req, res) => {
+  Activity.getAll((success, error) => {
+    if (success) {
+      res.status(200).json(success);
+    } else {
+      res.status(500).json(error);
+    }
+  });
+});
 
-// Create a new fna entry
-router.post("/", fna.create);
+router.post("/", (req, res) => {
+  const NewFNA = new Activity({
+    user_id: req.body.user_id,
+    amount: req.body.amount,
+    description: req.body.description,
+    type: req.body.type,
+    date: req.body.date,
+  });
 
-// // Retrieve all fna entries
-// router.get("/", fna.findAll);
-
-// // Retrieve a single fna entry with id
-// router.get("/:id", fna.findOne);
-
-// // Update a Tutorial with id
-// router.put("/:id", fna.update);
-
-// // Delete a Tutorial with id
-// router.delete("/:id", fna.delete);
+  Activity.createFNA(NewFNA, (success, error) => {
+    if (success) {
+      res.status(201).json(success);
+    } else {
+      res.status(500).json(error);
+    }
+  });
+});
 
 module.exports = router;

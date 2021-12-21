@@ -15,10 +15,4 @@ conn.query("SELECT 1 + 1 AS solution", function (error, results, fields) {
   console.log("Db is connected - The solution is: ", results[0].solution);
 });
 
-// let query = mysql.format(queries.GET_ALL_FNA);
-// conn.query(query, function (error, results, fields) {
-//   if (error) throw error;
-//   console.log("Db is connected - The solution is: ", results[0]);
-// });
-
 module.exports = conn;
