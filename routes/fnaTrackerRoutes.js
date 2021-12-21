@@ -1,13 +1,27 @@
 const express = require("express");
 const Activity = require("../models/activityModel");
 const router = express.Router();
+const httpStatus = require("../config/httpStatus");
 
 router.get("/", (req, res) => {
-  Activity.getAll((success, error) => {
-    if (success) {
-      res.status(200).json(success);
+  Activity.getAll((error, response) => {
+    if (response) {
+      console.log(response);
+      if (!response.type) res.status(httpStatus.OK).json(response);
+      else res.status(httpStatus.NO_CONTENT).json(response);
     } else {
-      res.status(500).json(error);
+      res.status(httpStatus.SERVER_ERROR).json(error);
+    }
+  });
+});
+
+router.get("/:id", (req, res) => {
+  Activity.getFnaById(req.params.id, (error, response) => {
+    if (response) {
+      if (!response.type) res.status(httpStatus.OK).json(response);
+      else res.status(httpStatus.NO_CONTENT).json(response);
+    } else {
+      res.status(httpStatus.NOT_FOUND).json(error);
     }
   });
 });
@@ -21,11 +35,40 @@ router.post("/", (req, res) => {
     date: req.body.date,
   });
 
-  Activity.createFNA(NewFNA, (success, error) => {
-    if (success) {
-      res.status(201).json(success);
+  Activity.createFNA(NewFNA, (error, response) => {
+    if (response) {
+      res.status(httpStatus.CREATED).json(response);
     } else {
-      res.status(500).json(error);
+      res.status(httpStatus.SERVER_ERROR).json(error);
+    }
+  });
+});
+
+router.put("/", (req, res) => {
+  const updateFNA = {
+    amount: req.body.amount,
+    description: req.body.description,
+    date: req.body.date,
+    id: req.body.id,
+  };
+
+  Activity.updateFNA(updateFNA, (error, response) => {
+    if (response) {
+      if (!response.type) res.status(httpStatus.OK).json(response);
+      else res.status(httpStatus.NOT_FOUND).json(response);
+    } else {
+      res.status(httpStatus.SERVER_ERROR).json(error);
+    }
+  });
+});
+
+router.delete("/:id", (req, res) => {
+  Activity.deleteFNA(req.params.id, (error, response) => {
+    if (response) {
+      if (!response.type) res.status(httpStatus.OK).json(response);
+      else res.status(httpStatus.NOT_FOUND).json(response);
+    } else {
+      res.status(httpStatus.SERVER_ERROR).json(error);
     }
   });
 });
