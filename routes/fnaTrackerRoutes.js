@@ -6,7 +6,6 @@ const httpStatus = require("../config/httpStatus");
 router.get("/", (req, res) => {
   Activity.getAll((error, response) => {
     if (response) {
-      console.log(response);
       if (!response.type) res.status(httpStatus.OK).json(response);
       else res.status(httpStatus.NO_CONTENT).json(response);
     } else {
